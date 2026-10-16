@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="description"
+        content="Application professionnelle de gestion des commandes, des produits, des paiements et des livraisons."
+    >
+
+    <title>Gestionnaire de commandes</title>
+
+    <!-- =====================================================
+         1. CONFIGURATION DES BIBLIOTHÈQUES
+    ====================================================== -->
+
+    <!-- Firebase : SDK Compat -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+    <!-- SheetJS : exportation Excel -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+
+    <!-- Feuille de style principale -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- =====================================================
+         2. EN-TÊTE
+    ====================================================== -->
+
+    <header>
+        <div class="header-container">
+
+            <h1 data-i18n="appTitle">
+                Gestionnaire de commandes
+            </h1>
+
+            <div class="lang-switch" aria-label="Choix de la langue">
+
+                <button
+                    type="button"
+                    id="btn-fr"
+                    class="active"
+                    aria-label="Français"
+                    aria-pressed="true"
+                    onclick="switchLanguage('FR')"
+                >
+                    FR
+                </button>
+
+                <button
+                    type="button"
+                    id="btn-en"
+                    aria-label="English"
+                    aria-pressed="false"
+                    onclick="switchLanguage('EN')"
+                >
+                    EN
+                </button>
+
+            </div>
+        </div>
+    </header>
+
+
+    <!-- =====================================================
+         3. CONTENU PRINCIPAL
+    ====================================================== -->
+
+    <main class="container">
+
+        <!-- =================================================
+             3.1 FORMULAIRE DE COMMANDE
+        ================================================== -->
+
+        <section class="card form-section">
+
+            <h2
+                id="form-title"
+                data-i18n="newOrderTitle"
+            >
+                Nouvelle Commande
+            </h2>
+
+            <form id="order-form">
+
+                <!-- Identifiant Firestore de la commande -->
+                <input
+                    type="hidden"
+                    id="order-id"
+                >
+
+                <div class="form-grid">
+
+                    <!-- Numéro de commande -->
+                    <div class="form-group">
+
+                        <label
+                            for="order-number"
+                            data-i18n="lblOrderNum"
+                        >
+                            Numéro de Commande
+                        </label>
+
+                        <input
+                            type="text"
+                            id="order-number"
+                            placeholder="Auto-généré"
+                            required
+                            readonly
+                        >
+
+                    </div>
+
+
+                    <!-- Date -->
+                    <div class="form-group">
+
+                        <label
+                            for="order-date"
+                            data-i18n="lblOrderDate"
+                        >
+                            Date de Commande
+                        </label>
+
+                        <input
+                            type="date"
+                            id="order-date"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- Client -->
+                    <div class="form-group">
+
+                        <label
+                            for="client-name"
+                            data-i18n="lblClientName"
+                        >
+                            Nom du Client
+                        </label>
+
+                        <input
+                            type="text"
+                            id="client-name"
+                            list="clients-list"
+                            autocomplete="off"
+                            required
+                        >
+
+                        <datalist id="clients-list"></datalist>
+
+                    </div>
+
+
+                    <!-- Contact -->
+                    <div class="form-group">
+
+                        <label
+                            for="client-contact"
+                            data-i18n="lblClientContact"
+                        >
+                            Contact Client
+                        </label>
+
+                        <input
+                            type="text"
+                            id="client-contact"
+                            autocomplete="tel"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- Livraison -->
+                    <div class="form-group">
+
+                        <label
+                            for="delivery-location"
+                            data-i18n="lblDeliveryLoc"
+                        >
+                            Lieu de Livraison
+                        </label>
+
+                        <input
+                            type="text"
+                            id="delivery-location"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- Statut du paiement -->
+                    <div class="form-group">
+
+                        <label
+                            for="payment-status"
+                            data-i18n="lblPayStatus"
+                        >
+                            Statut Paiement
+                        </label>
+
+                        <select
+                            id="payment-status"
+                            required
+                        >
+
+                            <option
+                                value="unpaid"
+                                data-i18n="optUnpaid"
+                            >
+                                Non payé
+                            </option>
+
+                            <option
+                                value="partial"
+                                data-i18n="optPartial"
+                            >
+                                Payé partiellement
+                            </option>
+
+                            <option
+                                value="paid"
+                                data-i18n="optPaid"
+                            >
+                                Payé
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Statut de la livraison -->
+                    <div class="form-group">
+
+                        <label
+                            for="delivery-status"
+                            data-i18n="lblDelivStatus"
+                        >
+                            Statut Préparation & Livraison
+                        </label>
+
+                        <select
+                            id="delivery-status"
+                            required
+                        >
+
+                            <option
+                                value="new"
+                                data-i18n="optNew"
+                            >
+                                Nouvelle commande
+                            </option>
+
+                            <option
+                                value="preparing"
+                                data-i18n="optPreparing"
+                            >
+                                En cours de préparation
+                            </option>
+
+                            <option
+                                value="shipping"
+                                data-i18n="optShipping"
+                            >
+                                En cours de livraison
+                            </option>
+
+                            <option
+                                value="delivered"
+                                data-i18n="optDelivered"
+                            >
+                                Livré
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================================
+                     3.2 PRODUITS
+                ========================================== -->
+
+                <div class="products-section">
+
+                    <h3 data-i18n="titleProducts">
+                        Produits de la commande
+                    </h3>
+
+                    <div id="products-container">
+                        <!-- Les produits sont ajoutés par app.js -->
+                    </div>
+
+                    <button
+                        type="button"
+                        id="btn-add-product"
+                        class="btn btn-secondary"
+                        data-i18n="btnAddProduct"
+                    >
+                        + Ajouter un produit
+                    </button>
+
+                </div>
+
+
+                <!-- =========================================
+                     3.3 MONTANTS
+                ========================================== -->
+
+                <div class="financial-grid">
+
+                    <!-- Sous-total -->
+                    <div class="form-group">
+
+                        <label
+                            for="order-subtotal"
+                            data-i18n="lblSubtotal"
+                        >
+                            Sous-total ($)
+                        </label>
+
+                        <input
+                            type="number"
+                            id="order-subtotal"
+                            value="0"
+                            min="0"
+                            step="0.01"
+                            readonly
+                        >
+
+                    </div>
+
+
+                    <!-- Frais de livraison -->
+                    <div class="form-group">
+
+                        <label
+                            for="delivery-fee"
+                            data-i18n="lblDelivFee"
+                        >
+                            Frais de livraison ($)
+                        </label>
+
+                        <input
+                            type="number"
+                            id="delivery-fee"
+                            min="0"
+                            step="0.01"
+                            value="0"
+                        >
+
+                    </div>
+
+
+                    <!-- Total -->
+                    <div class="form-group">
+
+                        <label
+                            for="order-total"
+                            data-i18n="lblTotal"
+                        >
+                            Prix Total ($)
+                        </label>
+
+                        <input
+                            type="number"
+                            id="order-total"
+                            value="0"
+                            min="0"
+                            step="0.01"
+                            class="total-highlight"
+                            readonly
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================================
+                     3.4 ACTIONS DU FORMULAIRE
+                ========================================== -->
+
+                <div class="form-actions">
+
+                    <button
+                        type="button"
+                        id="btn-add-category"
+                        class="btn btn-secondary"
+                        data-i18n="btnAddCategory"
+                    >
+                        Ajouter d'autres catégories
+                    </button>
+
+                    <button
+                        type="submit"
+                        id="btn-submit-order"
+                        class="btn btn-primary"
+                        data-i18n="btnSaveOrder"
+                    >
+                        Enregistrer la Commande
+                    </button>
+
+                    <button
+                        type="button"
+                        id="btn-cancel-edit"
+                        class="btn btn-danger hidden"
+                        data-i18n="btnCancel"
+                    >
+                        Annuler
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+
+        <!-- =================================================
+             4. TABLEAU DE BORD
+        ================================================== -->
+
+        <section class="card report-section">
+
+            <h2 data-i18n="titleReports">
+                Tableau des Rapports & Performances
+            </h2>
+
+            <div class="metrics-grid">
+
+                <!-- Nombre de commandes -->
+                <div class="metric-card">
+
+                    <p
+                        class="metric-label"
+                        data-i18n="statTotalOrders"
+                    >
+                        Nombre Total de Commandes
+                    </p>
+
+                    <p
+                        class="metric-value"
+                        id="stat-total-orders"
+                    >
+                        0
+                    </p>
+
+                </div>
+
+
+                <!-- Chiffre d'affaires -->
+                <div class="metric-card">
+
+                    <p
+                        class="metric-label"
+                        data-i18n="statTotalRevenue"
+                    >
+                        Chiffre d'Affaires Cumulé
+                    </p>
+
+                    <p
+                        class="metric-value"
+                        id="stat-total-revenue"
+                    >
+                        0.00 $
+                    </p>
+
+                </div>
+
+
+                <!-- Livraisons en cours -->
+                <div class="metric-card">
+
+                    <p
+                        class="metric-label"
+                        data-i18n="statPendingDeliv"
+                    >
+                        Livraisons en Cours
+                    </p>
+
+                    <p
+                        class="metric-value"
+                        id="stat-pending-delivery"
+                    >
+                        0
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- Rapport journalier -->
+            <div class="daily-phrase-box">
+
+                <h3 data-i18n="titleDailyReport">
+                    Rapport Journalier Automatique
+                </h3>
+
+                <p
+                    id="daily-report-phrase"
+                    class="phrase-text"
+                    data-i18n="noDataToday"
+                >
+                    Aucune commande enregistrée pour aujourd'hui.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             5. REGISTRE DES COMMANDES
+        ================================================== -->
+
+        <section class="card data-section">
+
+            <div class="section-header-actions">
+
+                <h2 data-i18n="titleOrdersTable">
+                    Registre Global des Commandes
+                </h2>
+
+                <button
+                    type="button"
+                    id="btn-export-excel"
+                    class="btn btn-success"
+                    data-i18n="btnExportExcel"
+                >
+                    Exporter les Données en Excel (.xlsx)
+                </button>
+
+            </div>
+
+
+            <!-- =============================================
+                 5.1 FILTRES
+            ============================================== -->
+
+            <div class="filters-box">
+
+                <h3 data-i18n="titleFilters">
+                    Filtres Avancés
+                </h3>
+
+                <div class="filters-grid">
+
+                    <!-- Recherche -->
+                    <input
+                        type="search"
+                        id="filter-search"
+                        placeholder="Rechercher (Client, Commande, Produit...)"
+                        data-i18n-holder="placeSearch"
+                        aria-label="Rechercher une commande"
+                    >
+
+
+                    <!-- Date -->
+                    <input
+                        type="date"
+                        id="filter-date"
+                        aria-label="Filtrer par date"
+                    >
+
+
+                    <!-- Filtre paiement -->
+                    <select
+                        id="filter-payment"
+                        aria-label="Filtrer par statut de paiement"
+                    >
+
+                        <option
+                            value=""
+                            data-i18n="filterAllPay"
+                        >
+                            Tous les statuts de paiement
+                        </option>
+
+                        <option
+                            value="unpaid"
+                            data-i18n="optUnpaid"
+                        >
+                            Non payé
+                        </option>
+
+                        <option
+                            value="partial"
+                            data-i18n="optPartial"
+                        >
+                            Payé partiellement
+                        </option>
+
+                        <option
+                            value="paid"
+                            data-i18n="optPaid"
+                        >
+                            Payé
+                        </option>
+
+                    </select>
+
+
+                    <!-- Filtre livraison -->
+                    <select
+                        id="filter-delivery"
+                        aria-label="Filtrer par statut de livraison"
+                    >
+
+                        <option
+                            value=""
+                            data-i18n="filterAllDeliv"
+                        >
+                            Tous les statuts de livraison
+                        </option>
+
+                        <option
+                            value="new"
+                            data-i18n="optNew"
+                        >
+                            Nouvelle commande
+                        </option>
+
+                        <option
+                            value="preparing"
+                            data-i18n="optPreparing"
+                        >
+                            En cours de préparation
+                        </option>
+
+                        <option
+                            value="shipping"
+                            data-i18n="optShipping"
+                        >
+                            En cours de livraison
+                        </option>
+
+                        <option
+                            value="delivered"
+                            data-i18n="optDelivered"
+                        >
+                            Livré
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <!-- =============================================
+                 5.2 TABLEAU
+            ============================================== -->
+
+            <div class="table-responsive">
+
+                <table id="orders-excel-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th data-i18n="thOrderNum">
+                                N° Commande
+                            </th>
+
+                            <th data-i18n="thDate">
+                                Date
+                            </th>
+
+                            <th data-i18n="thClient">
+                                Client & Contact
+                            </th>
+
+                            <th data-i18n="thLocation">
+                                Lieu Liv.
+                            </th>
+
+                            <th data-i18n="thProducts">
+                                Produits (Nom x Qté)
+                            </th>
+
+                            <th data-i18n="thSubtotal">
+                                Sous-Total
+                            </th>
+
+                            <th data-i18n="thDelivFee">
+                                Frais Liv.
+                            </th>
+
+                            <th data-i18n="thTotal">
+                                Prix Total
+                            </th>
+
+                            <th data-i18n="thPayStatus">
+                                Statut Paiement
+                            </th>
+
+                            <th data-i18n="thDelivStatus">
+                                Statut Logistique
+                            </th>
+
+                            <th data-i18n="thActions">
+                                Actions
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="orders-tbody">
+                        <!-- Les commandes sont chargées par app.js -->
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =====================================================
+         6. APPLICATION JAVASCRIPT
+    ====================================================== -->
+
+    <!-- Doit être chargé après les bibliothèques et le HTML -->
+    <script src="app.js"></script>
+
+</body>
+</html>
