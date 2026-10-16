@@ -1,0 +1,467 @@
+/* ==========================================================================
+   1. CONFIGURATION SYSTEME & VARIABLES PREMIUM
+   ========================================================================== */
+@import url('https://googleapis.com');
+
+:root {
+    --excel-brand: #107c41;
+    --excel-dark: #0a522b;
+    --excel-surface: #f3f9f5;
+    --excel-border: #81c995;
+    
+    /* Neutres modernes */
+    --slate-50: #f8fafc;
+    --slate-100: #f1f5f9;
+    --slate-200: #e2e8f0;
+    --slate-600: #475569;
+    --slate-800: #1e293b;
+    
+    /* Statuts d'entreprise */
+    --color-danger: #ef4444;
+    --color-warning: #f59e0b;
+    --color-success: #10b981;
+    --color-info: #3b82f6;
+    
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    --radius: 8px;
+    --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background-color: #f6f8fa;
+    color: var(--slate-800);
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: 60px;
+}
+
+.container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 32px 24px;
+}
+
+.hidden { display: none !important; }
+
+/* ==========================================================================
+   2. NAVBAR STYLE DASHBOARD CORPORATE
+   ========================================================================== */
+header {
+    background: var(--slate-800);
+    color: white;
+    padding: 16px 0;
+    border-bottom: 3px solid var(--excel-brand);
+}
+
+.header-container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+header h1::before {
+    content: "📊";
+    font-size: 1.4rem;
+}
+
+.lang-switch {
+    display: flex;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 4px;
+    border-radius: 6px;
+}
+
+.lang-switch button {
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    padding: 6px 14px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.85rem;
+    border-radius: 4px;
+    transition: var(--transition);
+}
+
+.lang-switch button.active {
+    background: white;
+    color: var(--slate-800);
+    box-shadow: var(--shadow-sm);
+}
+
+/* ==========================================================================
+   3. FORMULAIRE DE SAISIE AVANCÉ (CARDS)
+   ========================================================================== */
+.card {
+    background: white;
+    border-radius: var(--radius);
+    border: 1px solid var(--slate-200);
+    padding: 28px;
+    margin-bottom: 28px;
+    box-shadow: var(--shadow-md);
+}
+
+h2 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--slate-800);
+    margin-bottom: 24px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--slate-600);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+input[type="text"],
+input[type="date"],
+input[type="number"],
+select {
+    height: 40px;
+    padding: 0 14px;
+    border: 1px solid var(--slate-200);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: var(--slate-800);
+    background-color: white;
+    outline: none;
+    transition: var(--transition);
+}
+
+input:focus, select:focus {
+    border-color: var(--excel-brand);
+    box-shadow: 0 0 0 3px rgba(16, 124, 65, 0.15);
+}
+
+input[readonly] {
+    background-color: var(--slate-50);
+    color: #64748b;
+    cursor: not-allowed;
+}
+
+/* Zone Multi-Produits Dynamique */
+.products-section {
+    background-color: var(--excel-surface);
+    padding: 20px;
+    border-radius: var(--radius);
+    margin-bottom: 24px;
+    border: 1px solid rgba(16, 124, 65, 0.15);
+}
+
+.products-section h3 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--excel-dark);
+}
+
+.product-row {
+    display: grid;
+    grid-template-columns: 3fr 1.2fr 1fr 1.2fr auto;
+    gap: 14px;
+    align-items: end;
+    margin-bottom: 12px;
+}
+
+/* Grille Financière Intelligente */
+.financial-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 28px;
+    background: var(--slate-50);
+    padding: 20px;
+    border-radius: var(--radius);
+    border: 1px dashed var(--slate-200);
+}
+
+.total-highlight {
+    font-weight: 700;
+    color: var(--excel-dark) !important;
+    font-size: 1.1rem !important;
+    background-color: #e6f4ea !important;
+    border-color: var(--excel-border) !important;
+}
+
+/* Boutons d'Action Pro */
+.btn {
+    height: 40px;
+    padding: 0 20px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: var(--transition);
+}
+
+.btn-primary { background-color: var(--excel-brand); color: white; }
+.btn-primary:hover { background-color: var(--excel-dark); }
+.btn-secondary { background-color: white; color: var(--slate-600); border: 1px solid var(--slate-200); box-shadow: var(--shadow-sm); }
+.btn-secondary:hover { background-color: var(--slate-50); color: var(--slate-800); }
+.btn-danger { background-color: var(--color-danger); color: white; }
+.btn-danger:hover { background-color: #dc2626; }
+.btn-success { background-color: #16a34a; color: white; }
+.btn-success:hover { background-color: #15803d; }
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+
+/* ==========================================================================
+   4. RAPPORTS (KPI BLOCKS) & PHRASE ANALYTIQUE
+   ========================================================================== */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.metric-card {
+    background: white;
+    border: 1px solid var(--slate-200);
+    padding: 20px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    overflow: hidden;
+}
+
+.metric-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background-color: var(--excel-brand);
+}
+
+.metric-label {
+    font-size: 0.75rem;
+    color: var(--slate-600);
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.metric-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--slate-800);
+    margin-top: 8px;
+    letter-spacing: -0.5px;
+}
+
+.daily-phrase-box {
+    background-color: #eff6ff;
+    border: 1px solid #bfdbfe;
+    padding: 16px 20px;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.daily-phrase-box h3 {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #1e40af;
+    text-transform: uppercase;
+}
+
+.phrase-text {
+    font-size: 0.95rem;
+    color: #1e3a8a;
+    font-weight: 500;
+}
+
+/* ==========================================================================
+   5. COMPOSANT FILTRES AVANCÉS
+   ========================================================================== */
+.section-header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.filters-box {
+    background: var(--slate-50);
+    padding: 20px;
+    border: 1px solid var(--slate-200);
+    border-radius: var(--radius);
+    margin-bottom: 20px;
+}
+
+.filters-box h3 {
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--slate-600);
+    text-transform: uppercase;
+}
+
+.filters-grid {
+    display: grid;
+    grid-template-columns: 2fr repeat(3, 1fr);
+    gap: 14px;
+}
+
+@media (max-width: 900px) {
+    .filters-grid { grid-template-columns: 1fr; }
+}
+
+/* ==========================================================================
+   6. GRILLE DATATABLE PROFESSIONNELLE (STYLE EXCEL)
+   ========================================================================== */
+.table-responsive {
+    overflow-x: auto;
+    border: 1px solid var(--slate-200);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    background: white;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    text-align: left;
+}
+
+th {
+    background-color: var(--slate-100);
+    color: var(--slate-600);
+    font-weight: 600;
+    padding: 14px 16px;
+    border-bottom: 2px solid var(--slate-200);
+    border-right: 1px solid var(--slate-200);
+    white-space: nowrap;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.3px;
+}
+
+td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--slate-200);
+    border-right: 1px solid var(--slate-200);
+    color: var(--slate-800);
+    vertical-align: middle;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+tr:hover td {
+    background-color: #f8fafc;
+}
+
+/* Cellules spécifiques */
+mark {
+    background: none;
+    color: inherit;
+}
+
+mark b {
+    color: var(--slate-800);
+    font-weight: 600;
+}
+
+.table-products-list {
+    list-style: none;
+    font-size: 0.8rem;
+    color: var(--slate-600);
+}
+
+.table-products-list li {
+    margin-bottom: 2px;
+}
+
+/* Badges Corporate Modernes (Capsules unifiées) */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1;
+}
+
+/* Statuts Paiement Mappés */
+.badge-unpaid { background-color: #fef2f2; color: var(--color-danger); }
+.badge-partial { background-color: #fffbeb; color: var(--color-warning); }
+.badge-paid { background-color: #ecfdf5; color: var(--color-success); }
+
+/* Statuts Logistique Mappés */
+.badge-new { background-color: #eff6ff; color: var(--color-info); }
+.badge-preparing { background-color: #faf5ff; color: #a855f7; }
+.badge-shipping { background-color: #f0fdfa; color: #14b8a6; }
+.badge-delivered { background-color: #ecfdf5; color: var(--color-success); }
+
+/* Actions Inline du Tableur */
+.action-btn-group {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-sm {
+    height: 30px;
+    padding: 0 10px;
+    font-size: 0.8rem;
+    border-radius: 4px;
+}
