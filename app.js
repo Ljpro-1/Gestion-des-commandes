@@ -484,16 +484,18 @@ function calculateOrderTotals() {
 // ==========================================================================
 
 function generateOrderNumber() {
-    const timestamp = Date.now().toString(36).toUpperCase();
+    const maxNumber = allOrders.reduce((max, order) => {
+        const match = String(order.number || "").match(/^CMD-(\d+)$/);
 
-    const random = Math.random()
-        .toString(36)
-        .slice(2, 6)
-        .toUpperCase();
+        if (match) {
+            return Math.max(max, Number(match[1]));
+        }
 
-    return `CMD-${timestamp}-${random}`;
+        return max;
+    }, 0);
+
+    return `CMD-${maxNumber + 1}`;
 }
-
 
 // ==========================================================================
 // 9. RÉINITIALISATION DU FORMULAIRE
